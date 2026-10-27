@@ -2,15 +2,15 @@
 name: Build Axiss Pay APK
 
 on:
-  push:
   workflow_dispatch:
+  push:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download project
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Setup Java
@@ -21,19 +21,21 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
 
-      - name: Install Android SDK packages
+      - name: Install SDK packages
         run: |
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Build Release APK
+      - name: Build APK
         run: |
           if [ -f "./gradlew" ]; then
             chmod +x ./gradlew
             ./gradlew assembleRelease --no-daemon
           else
-            echo "ERROR: gradlew not found in project root"
+            echo "ERROR: gradlew file is missing"
             exit 1
           fi
 
